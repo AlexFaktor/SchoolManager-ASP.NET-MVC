@@ -1,10 +1,9 @@
-﻿namespace SchoolManager.Models.SchoolModels
+﻿using SchoolManager.Database.Entity;
+
+namespace SchoolManager.Models.SchoolModels
 {
-    public class GroupViewModel
+    public class GroupViewModel(GroupRecord record)
     {
-        public int Id { get; set; }
-        public required string Name { get; set; }
-        public int CourseId { get; set; }
-        public required List<StudentViewModel> Students { get; set; }
+        GroupRecord Record { get; } = record;
     }
 }

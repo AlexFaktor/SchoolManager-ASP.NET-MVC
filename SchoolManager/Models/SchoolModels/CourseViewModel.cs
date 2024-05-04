@@ -1,11 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using SchoolManager.Database.Entity;
 
 namespace SchoolManager.Models.SchoolModels
 {
-    public class CourseViewModel
+    public class CourseViewModel(CourseRecord record)
     {
-        public int Id { get; set; }
-        public required string Name { get; set; }
-        public required List<GroupViewModel> Groups { get; set; }
+        CourseRecord Record { get; } = record;
     }
 }

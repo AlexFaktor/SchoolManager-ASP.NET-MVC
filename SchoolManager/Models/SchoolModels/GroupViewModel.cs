@@ -2,9 +2,9 @@
 {
     public class GroupViewModel
     {
-        public int GroupId { get; set; }
-        public string GroupName { get; set; }
+        public int Id { get; set; }
+        public required string Name { get; set; }
         public int CourseId { get; set; }
-        public List<StudentViewModel> Students { get; set; }
+        public required List<StudentViewModel> Students { get; set; }
     }
 }

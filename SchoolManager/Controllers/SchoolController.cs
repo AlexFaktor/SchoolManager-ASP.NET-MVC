@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.Database.Database;
 using SchoolManager.Database.Entity;
@@ -140,53 +141,62 @@ namespace SchoolManager.Controllers
             return View(new SchoolCreateStudentVM(_context.Groups.ToList()));
         }
 
-        // GET: SchoolController/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        // GET: SchoolController/EditCourse
+        [HttpGet("EditCourse/{courseId}")]
+        public IActionResult EditCourse(Guid courseId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var course = await _context.Courses.FindAsync(id);
+            var course = _context.Courses.FirstOrDefault(c => c.Id == courseId);
             if (course == null)
-            {
                 return NotFound();
-            }
-            return View(course);
+
+            var vm = new SchoolEditCourseVM(course);
+            return View(vm);
         }
 
-        // POST: SchoolController/Edit/5
+        // PUT: SchoolController/EditCourse
+        [HttpPut]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCoursePut(SchoolEditCourseVM vm)
+        {
+            var newRecord = vm.NewCourse;
+
+            var recordForEdit = _context.Courses.FirstOrDefault(c => c.Id == newRecord.Id);
+            if (recordForEdit == null)
+                return NotFound();
+
+            recordForEdit.Name = newRecord.Name;
+            _context.SaveChanges();
+            return Ok();
+        }
+
+        // GET: SchoolController/EditGroup
+        [HttpGet("EditGroup/{groupId}")]
+        public async Task<IActionResult> EditGroup(Guid groupId)
+        {
+            return NotFound();
+        }
+
+        // PUT: SchoolController/EditGroup
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name")] CourseRecord course)
+        public async Task<IActionResult> EditGroup(GroupRecord newGroup)
         {
-            if (id != course.Id)
-            {
-                return NotFound();
-            }
+            return NotFound();
+        }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseExists(course.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(course);
+        // GET: SchoolController/EditStudent
+        [HttpGet("EditStudent/{studentId}")]
+        public async Task<IActionResult> EditStudent(Guid studentId)
+        {
+            return NotFound();
+        }
+
+        // PUT: SchoolController/EditStudent
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditStudent(StudentRecord newStudent)
+        {
+            return NotFound();
         }
 
         // DELETE: SchoolController/DeleteCourse

@@ -1,5 +1,24 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using SchoolManager.Models.ViewModels.SchoolVM
+@model SchoolEditCourseVM
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
 @{
+    ViewData["Title"] = "Edit course";
 }
+
+<div class="card col-md-14">
+    <h1>Курс</h1>
+    <p>Назва - @Model.RecordCourse.Name</p>
+</div>
+
+<div class="card col-md-12">
+    <h1>Оновити</h1>
+    
+    <form asp-controller="School" asp-action="EditCoursePut" value="@Model" method="put">
+        <label for="name">Нове ім'я<label>
+        <input id="name" asp-for="@Model.NewCourse.Name" />
+    
+        <button type="submit">Оновити</button>
+    </form>
+    
+</div>

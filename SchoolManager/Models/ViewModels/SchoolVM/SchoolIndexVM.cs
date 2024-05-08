@@ -12,19 +12,4 @@ namespace SchoolManager.Models.ViewModels.SchoolVM
         public Guid? GroupId { get; set; } = Guid.Empty;
         public Guid? StudentId { get; set; } = Guid.Empty;
     }
-    
-    public class SchoolEditCourseVM
-    {
-
-    }
-    
-    public class SchoolEditGroupVM
-    {
-
-    }
-    
-    public class SchoolEditStudentVM
-    {
-
-    }
 }

@@ -33,5 +33,15 @@ namespace SchoolManager.Database.Services
             }
             return false;
         }
+
+        public bool DeleteCourse(Guid id)
+        {
+            if(_db.Courses.Any(c => c.Id == id))
+            {
+                _db.Courses.Remove(_db.Courses.First(c => c.Id == id));
+                return true;
+            }
+            return false;
+        }
     }
 }

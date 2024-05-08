@@ -25,3 +25,5 @@ namespace SchoolManager.Database.Database
             .UseSqlite($"Data Source={path + "SchoolASPdb.db"};Foreign Keys=False");
     }
 }
+
+

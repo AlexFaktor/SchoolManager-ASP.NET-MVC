@@ -1,0 +1,103 @@
+﻿@using SchoolManager.Models.ViewModels.SchoolVM
+
+@model SchoolIndexVM
+
+@{
+    ViewData["Title"] = "Create Course Page";
+}
+
+<script src="~/js/courseForm.js"></script>
+
+<div class="row">
+    <div class="col">
+        <div class="container-md border">
+            @{
+                if (Model.Courses.Count == 0)
+                {
+                    <h3>Курси відсутні</h3>
+                }
+                else
+                {
+                    <h3>Курси: </h3>
+                    foreach (var course in @Model.Courses)
+                    {
+                        <div class="container-md border">
+                            <p>@course.Name 
+                            <a asp-controller="School" asp-action="Index" asp-route-courseId="@course.Id">Групи курса</a>
+                            <a class="text-danger" asp-controller="School" asp-action="DeleteCourse" asp-route-id="@course.Id">Видалити</a>
+                            </p>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="col">
+        <div class="container-md border">
+            @{
+                if (Model.CourseId == Guid.Empty)
+                {
+                    <h3>Курс не вибраний</h3>
+                }
+                else
+                {
+                    <h3>Групи: </h3>
+                    foreach (var group in @Model.Groups)
+                    {
+                        <div class="container-md border">
+                            <p>
+                            @group.Name <a asp-controller="School" asp-action="Index" asp-route-courseId="@Model.CourseId" asp-route-groupId="@group.Id">Cтуденти групи</a>
+                            <a class="text-danger" asp-controller="School" asp-action="DeleteGroup" asp-route-id="@group.Id">Видалити</a>
+                            </p>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="col">
+        <div class="container-md border">
+            @{
+                if (Model.GroupId == Guid.Empty)
+                {
+                    <h3>Група не вибрана</h3>
+                }
+                else
+                {
+                    <h3>Студенти: </h3>
+                    foreach (var student in @Model.Students)
+                    {
+                        <div class="container-md border">
+                            <p>
+                            @student.Name @student.Surname  <a asp-controller="School" asp-action="Index" asp-route-courseId="@Model.CourseId" asp-route-groupId="@Model.GroupId" asp-route-studentId="@student.Id">Повна інформація</a>
+                            <a class="text-danger" asp-controller="School" asp-action="DeleteStudent" asp-route-id="@student.Id">Видалити</a>
+                            </p>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="col">
+        <div class="container-md border">
+            @{
+                if (Model.StudentId == Guid.Empty)
+                {
+                    <h4>Студент не вибраний</h4>
+                }
+                else
+                {
+                    var student = @Model.Students.First(s => s.Id == Model.StudentId);
+                    <p>Ім'я     - @student.Name</p>
+                    <p>Прізвище - @student.Surname</p>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

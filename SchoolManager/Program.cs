@@ -1,3 +1,5 @@
+using SchoolManager.Database.Database;
+
 namespace SchoolManager
 {
     public class Program
@@ -8,6 +10,8 @@ namespace SchoolManager
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<SchoolDbContext>();
 
             var app = builder.Build();
 

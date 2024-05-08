@@ -2,8 +2,8 @@
 
 namespace SchoolManager.Models.SchoolModels
 {
-    public class GroupViewModel(GroupRecord record)
+    public class CourseVM(CourseRecord record)
     {
-        GroupRecord Record { get; } = record;
+        public CourseRecord Record { get; } = record;
     }
 }

@@ -1,15 +1,17 @@
-﻿using SchoolManager.Database.Database;
+﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Database.Entity;
+using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Database.Services
 {
-    public class CourseService(SchoolDbContext db)
+    public class CourseService(SchoolDbContext db) : IEntityService
     {
         private readonly SchoolDbContext _db = db;
 
         public void AddCourseRecord(CourseRecord courseRecord) => _db.Courses.Add(courseRecord);
 
         public List<CourseRecord> GetCourses() => [.. _db.Courses];
+        public async Task<List<CourseRecord>> GetCoursesAsync() => await _db.Courses.ToListAsync();
 
         public bool UpdateCourse(CourseRecord courseRecord)
         {
@@ -36,7 +38,7 @@ namespace SchoolManager.Database.Services
 
         public bool DeleteCourse(Guid id)
         {
-            if(_db.Courses.Any(c => c.Id == id))
+            if (_db.Courses.Any(c => c.Id == id))
             {
                 _db.Courses.Remove(_db.Courses.First(c => c.Id == id));
                 return true;

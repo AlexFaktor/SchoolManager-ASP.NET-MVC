@@ -3,7 +3,7 @@ using SchoolManager.Database.Entity;
 using SchoolManager.Database.Entity.Configurations;
 using SchoolManager.Database.Tools;
 
-namespace SchoolManager.Database.Database
+namespace SchoolManager.Database
 {
     public class SchoolDbContext : DbContext
     {

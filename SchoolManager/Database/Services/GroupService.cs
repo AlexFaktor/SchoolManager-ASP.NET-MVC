@@ -1,15 +1,18 @@
-﻿using SchoolManager.Database.Database;
+﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Database.Entity;
+using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Database.Services
 {
-    public class GroupService(SchoolDbContext db)
+    public class GroupService(SchoolDbContext db) : IEntityService
     {
         private readonly SchoolDbContext _db = db;
 
         public void AddGroupRecord(GroupRecord groupRecord) => _db.Groups.Add(groupRecord);
 
         public List<GroupRecord> GetGroups() => [.. _db.Groups];
+
+        public async Task<List<GroupRecord>> GetGroupsAsync() => await _db.Groups.ToListAsync();
 
         public bool UpdateGroup(GroupRecord groupRecord)
         {

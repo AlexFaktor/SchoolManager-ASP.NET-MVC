@@ -22,10 +22,10 @@
                     foreach (var course in @Model.Courses)
                     {
                         <div class="container-md border">
-                            <p>@course.Name 
-                            <a asp-controller="School" asp-action="EditCourse" asp-route-courseId="@course.Id">Оновити</a>
+                            <p>@course.Name
+                            <a asp-controller="Course" asp-action="Edit" asp-route-courseId="@course.Id">Оновити</a>
                             <a asp-controller="School" asp-action="Index" asp-route-courseId="@course.Id">Групи курса</a>
-                            <a class="text-danger" asp-controller="School" asp-action="DeleteCourse" asp-route-id="@course.Id">Видалити</a>
+                            <a class="text-danger" asp-controller="Course" asp-action="Delete" asp-route-id="@course.Id">Видалити</a>
                             </p>
                         </div>
                     }
@@ -48,7 +48,7 @@
                         <div class="container-md border">
                             <p>
                             @group.Name <a asp-controller="School" asp-action="Index" asp-route-courseId="@Model.CourseId" asp-route-groupId="@group.Id">Cтуденти групи</a>
-                            <a class="text-danger" asp-controller="School" asp-action="DeleteGroup" asp-route-id="@group.Id">Видалити</a>
+                            <a class="text-danger" asp-controller="Group" asp-action="Delete" asp-route-id="@group.Id">Видалити</a>
                             </p>
                         </div>
                     }
@@ -71,7 +71,7 @@
                         <div class="container-md border">
                             <p>
                             @student.Name @student.Surname  <a asp-controller="School" asp-action="Index" asp-route-courseId="@Model.CourseId" asp-route-groupId="@Model.GroupId" asp-route-studentId="@student.Id">Повна інформація</a>
-                            <a class="text-danger" asp-controller="School" asp-action="DeleteStudent" asp-route-id="@student.Id">Видалити</a>
+                            <a class="text-danger" asp-controller="Student" asp-action="Delete" asp-route-id="@student.Id">Видалити</a>
                             </p>
                         </div>
                     }

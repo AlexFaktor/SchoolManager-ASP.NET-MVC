@@ -1,4 +1,5 @@
-using SchoolManager.Database.Database;
+using SchoolManager.Database;
+using SchoolManager.Resources.Interface;
 
 namespace SchoolManager
 {
@@ -10,8 +11,8 @@ namespace SchoolManager
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
             builder.Services.AddDbContext<SchoolDbContext>();
+            builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
 
             var app = builder.Build();
 
@@ -32,7 +33,7 @@ namespace SchoolManager
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}");
 
             app.Run();
         }

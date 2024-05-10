@@ -1,22 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SchoolManager.Database.Database;
+using SchoolManager.Database;
 using SchoolManager.Models;
-using SchoolManager.Models.SchoolModels;
 using System.Diagnostics;
 
 namespace SchoolManager.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly SchoolDbContext _context;
-
-        public HomeController(ILogger<HomeController> logger, SchoolDbContext context)
+        public HomeController()
         {
-            _logger = logger;
-            _context = context;
-        }  
+        }
 
         public IActionResult Index()
         {
@@ -27,9 +20,6 @@ namespace SchoolManager.Controllers
         {
             return View();
         }
-
-        
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

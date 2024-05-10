@@ -1,15 +1,18 @@
-﻿using SchoolManager.Database.Database;
+﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.Database.Entity;
+using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Database.Services
 {
-    public class StudentService(SchoolDbContext db)
+    public class StudentService(SchoolDbContext db) : IEntityService
     {
         private readonly SchoolDbContext _db = db;
 
         public void AddStudentRecord(StudentRecord studentRecord) => _db.Students.Add(studentRecord);
 
         public List<StudentRecord> GetStudents() => [.. _db.Students];
+
+        public async Task<List<StudentRecord>> GetStudentsAsync() => await _db.Students.ToListAsync();
 
         public bool UpdateStudent(StudentRecord studentRecord)
         {

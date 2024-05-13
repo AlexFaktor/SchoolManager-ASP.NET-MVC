@@ -10,9 +10,9 @@ namespace SchoolManager.Database
         public GroupService GroupService { get; }
         public StudentService StudentService { get; }
 
-        public SchoolRepository()
+        public SchoolRepository(SchoolDbContext context)
         {
-            _db = new SchoolDbContext();
+            _db = context;
             CourseService = new CourseService(_db);
             GroupService = new GroupService(_db);
             StudentService = new StudentService(_db);

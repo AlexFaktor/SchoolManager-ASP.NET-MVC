@@ -8,7 +8,7 @@
 
 <div class="card col-md-12">
     <h1>Додати групу</h1>
-    <form asp-controller="School" asp-action="CreateGroup" method="post">
+    <form asp-controller="Group" asp-action="Create" method="post">
         
         <label for="course">Оберіть курс:</label>
         <select class="form-control" id="course" asp-for="@Model.Group.CourseId">

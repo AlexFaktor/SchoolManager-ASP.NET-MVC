@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SchoolManager.Database;
 using SchoolManager.Resources.Interface;
 
@@ -11,7 +12,9 @@ namespace SchoolManager
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddDbContext<SchoolDbContext>();
+            builder.Services.AddDbContext<SchoolDbContext>(options =>
+               options.UseSqlite(builder.Configuration.GetConnectionString("SchoolDbConnection")));
+
             builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
 
             var app = builder.Build();
@@ -37,5 +40,17 @@ namespace SchoolManager
 
             app.Run();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureServices((hostContext, services) =>
+            {
+                // Додавання контексту бази даних
+                services.AddDbContext<SchoolDbContext>(options =>
+                    options.UseSqlite(hostContext.Configuration.GetConnectionString("SchoolDbConnection")));
+
+                // Додавання інших служб
+                // services.AddOtherServices();
+            });
     }
 }

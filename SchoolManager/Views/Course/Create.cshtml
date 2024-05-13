@@ -8,7 +8,7 @@
 
 <div class="card col-md-12">
     <h1>Створення курсу</h1>
-    <form asp-controller="School" asp-action="CreateCourse" asp-route-name="@Model.Course.Name" method="post">
+    <form asp-controller="Course" asp-action="Create" asp-route-name="@Model.Course.Name" method="post">
         <input asp-for="@Model.Course.Name" />
         <button type="submit">Додати курс</button>
     </form>

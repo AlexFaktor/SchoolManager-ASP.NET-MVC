@@ -36,7 +36,7 @@ namespace SchoolManager.Controllers
             {
                 _repository.GroupService.AddGroupRecord(groupVM.Group);
                 _repository.DbSaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "School");
             }
             return View(new SchoolCreateGroupVM(courses));
         }

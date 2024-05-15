@@ -7,12 +7,10 @@ namespace SchoolManager.Models.ViewModels.GroupVM
         public GroupRecord RecordGroup { get; set; }
         public GroupRecord NewGroup { get; set; }
 
-        public List<CourseRecord> Courses { get; }
 
-        public EditGroupVM(GroupRecord record, List<CourseRecord> courses)
+        public EditGroupVM(GroupRecord record)
         {
             RecordGroup = record;
-            Courses = courses;
 
             NewGroup = new GroupRecord()
             {

@@ -30,7 +30,7 @@ namespace SchoolManager.Database.Services
                 existingStudent.Surname = studentRecord.Surname;
                 existingStudent.GroupId = studentRecord.GroupId;
                 existingStudent.Group = studentRecord.Group;
-
+                _db.SaveChanges();
                 return true;
             }
             return false;

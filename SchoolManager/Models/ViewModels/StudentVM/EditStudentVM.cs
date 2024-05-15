@@ -7,12 +7,10 @@ namespace SchoolManager.Models.ViewModels.StudentVM
         public StudentRecord RecordStudent { get; set; }
         public StudentRecord NewStudent { get; set; }
 
-        public List<GroupRecord> Groups { get; }
 
-        public EditStudentVM(StudentRecord record, List<GroupRecord> groups)
+        public EditStudentVM(StudentRecord record)
         {
             RecordStudent = record;
-            Groups = groups;
 
             NewStudent = new StudentRecord()
             {

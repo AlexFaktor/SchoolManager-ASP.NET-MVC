@@ -2,8 +2,11 @@
 using SchoolManager.Database;
 using SchoolManager.Database.Entity;
 using SchoolManager.Models.SchoolModels;
+using SchoolManager.Models.ViewModels.CourseVM;
+using SchoolManager.Models.ViewModels.GroupVM;
 using SchoolManager.Models.ViewModels.StudentVM;
 using SchoolManager.Resources.Interface;
+using System.Text.RegularExpressions;
 
 namespace SchoolManager.Controllers
 {
@@ -34,6 +37,7 @@ namespace SchoolManager.Controllers
 
             if (ModelState.IsValid)
             {
+                _repository.StudentService.AddStudentRecord(studentVM.Student);
                 return RedirectToAction("Index", "School");
             }
 
@@ -44,15 +48,33 @@ namespace SchoolManager.Controllers
         [HttpGet("EditStudent/{studentId}")]
         public IActionResult Edit(Guid studentId)
         {
-            return NotFound();
+            var student = _repository.StudentService.GetStudent(studentId);
+
+            if (student == null)
+                return NotFound();
+
+            var vm = new EditStudentVM(student);
+            return View(vm);
         }
 
         // PUT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(StudentRecord newStudent)
+        public IActionResult EditPut(Guid id, EditStudentVM vm)
         {
-            return NotFound();
+            var recordForEdit = _repository.StudentService.GetStudent(id);
+
+            if (recordForEdit == null)
+                return NotFound();
+
+            vm.NewStudent.Id = id;
+            vm.NewStudent.GroupId = recordForEdit.GroupId;
+            vm.NewStudent.Group = recordForEdit.Group;
+
+            if (_repository.StudentService.UpdateStudent(vm.NewStudent))
+                return RedirectToAction("Index", "School");
+            else
+                return BadRequest();
         }
 
         // DELETE

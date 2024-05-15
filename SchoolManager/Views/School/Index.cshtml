@@ -48,6 +48,7 @@
                         <div class="container-md border">
                             <p>
                             @group.Name <a asp-controller="School" asp-action="Index" asp-route-courseId="@Model.CourseId" asp-route-groupId="@group.Id">Cтуденти групи</a>
+                            <a asp-controller="Group" asp-action="Edit" asp-route-groupId="@group.Id">Оновити</a>
                             <a class="text-danger" asp-controller="Group" asp-action="Delete" asp-route-id="@group.Id">Видалити</a>
                             </p>
                         </div>
@@ -71,6 +72,7 @@
                         <div class="container-md border">
                             <p>
                             @student.Name @student.Surname  <a asp-controller="School" asp-action="Index" asp-route-courseId="@Model.CourseId" asp-route-groupId="@Model.GroupId" asp-route-studentId="@student.Id">Повна інформація</a>
+                            <a asp-controller="Student" asp-action="Edit" asp-route-studentId="@student.Id">Оновити</a>
                             <a class="text-danger" asp-controller="Student" asp-action="Delete" asp-route-id="@student.Id">Видалити</a>
                             </p>
                         </div>

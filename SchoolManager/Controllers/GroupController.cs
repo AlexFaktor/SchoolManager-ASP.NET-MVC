@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Database;
 using SchoolManager.Database.Entity;
+using SchoolManager.Models.SchoolModels;
+using SchoolManager.Models.ViewModels.CourseVM;
 using SchoolManager.Models.ViewModels.GroupVM;
 using SchoolManager.Resources.Interface;
 
@@ -44,15 +46,34 @@ namespace SchoolManager.Controllers
         [HttpGet("EditGroup/{groupId}")]
         public IActionResult Edit(Guid groupId)
         {
-            return NotFound();
+            var group = _repository.GroupService.GetGroup(groupId);
+
+            if (group == null)
+                return NotFound();
+
+            var vm = new EditGroupVM(group);
+            return View(vm);
         }
 
         // PUT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(GroupRecord newGroup)
+        public IActionResult EditPut(Guid id, EditGroupVM vm)
         {
-            return NotFound();
+            var recordForEdit = _repository.GroupService.GetGroup(id);
+
+            if (recordForEdit == null)
+                return NotFound();
+
+            vm.NewGroup.Id = id;
+            vm.NewGroup.CourseId = recordForEdit.CourseId;
+            vm.NewGroup.Course = recordForEdit.Course;
+            vm.NewGroup.Students = recordForEdit.Students;
+
+            if (_repository.GroupService.UpdateGroup(vm.NewGroup))
+                return RedirectToAction("Index", "School");
+            else
+                return BadRequest();
         }
 
         // DELETE

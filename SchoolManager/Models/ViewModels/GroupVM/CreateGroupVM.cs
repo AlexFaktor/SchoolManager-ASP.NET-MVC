@@ -1,21 +1,21 @@
 ﻿using SchoolManager.Database.Entity;
 using SchoolManager.Models.SchoolModels;
 
-namespace SchoolManager.Models.ViewModels.SchoolVM
+namespace SchoolManager.Models.ViewModels.GroupVM
 {
-    public class SchoolCreateGroupVM
+    public class CreateGroupVM
     {
         public GroupRecord Group { get; set; }
 
         public List<CourseRecord> Courses { get; }
 
-        public SchoolCreateGroupVM(List<CourseRecord> courses)
+        public CreateGroupVM(List<CourseRecord> courses)
         {
             Group = new GroupRecord();
             Courses = courses;
         }
 
-        public SchoolCreateGroupVM()
+        public CreateGroupVM()
         {
             Group = new GroupRecord();
             Courses = new List<CourseRecord>();

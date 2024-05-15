@@ -42,6 +42,7 @@ namespace SchoolManager.Database.Services
             if (_db.Groups.Any(g => g.Id == groupRecord.Id))
             {
                 _db.Groups.Remove(_db.Groups.First(g => g.Id == groupRecord.Id));
+                _db.SaveChanges();
                 return true;
             }
             return false;
@@ -52,6 +53,7 @@ namespace SchoolManager.Database.Services
             if (_db.Groups.Any(g => g.Id == id))
             {
                 _db.Groups.Remove(_db.Groups.First(g => g.Id == id));
+                _db.SaveChanges();
                 return true;
             }
             return false;

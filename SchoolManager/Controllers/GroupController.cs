@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Database;
 using SchoolManager.Database.Entity;
-using SchoolManager.Models.ViewModels.SchoolVM;
+using SchoolManager.Models.ViewModels.GroupVM;
 using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Controllers
@@ -20,13 +20,13 @@ namespace SchoolManager.Controllers
         public async Task<IActionResult> Create()
         {
             var courses = await _repository.CourseService.GetCoursesAsync();
-            return View(new SchoolCreateGroupVM(courses));
+            return View(new CreateGroupVM(courses));
         }
 
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(SchoolCreateGroupVM groupVM)
+        public IActionResult Create(CreateGroupVM groupVM)
         {
             var courseId = groupVM.Group.CourseId ?? throw new Exception("CourseId cannot be null");
 
@@ -37,7 +37,7 @@ namespace SchoolManager.Controllers
                 _repository.GroupService.AddGroupRecord(groupVM.Group);
                 return RedirectToAction("Index", "School");
             }
-            return View(new SchoolCreateGroupVM(_repository.CourseService.GetCourses()));
+            return View(new CreateGroupVM(_repository.CourseService.GetCourses()));
         }
 
         // GET
@@ -62,11 +62,12 @@ namespace SchoolManager.Controllers
                 return NotFound();
 
             var group = _repository.GroupService.GetGroup(id);
+            var isGroupHasStudents = _repository.StudentService.GetStudents(group!.Id).Count > 0;
 
             if (group == null)
                 return NotFound();
 
-            if (group.Students.Count > 0)
+            if (isGroupHasStudents)
             {
                 TempData["ErrorMessage"] = "Неможливо видалити групу, оскільки вона має студентів.";
                 return RedirectToAction("Index", "School");

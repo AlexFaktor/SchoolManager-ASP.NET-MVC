@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Database;
 using SchoolManager.Database.Entity;
-using SchoolManager.Models.ViewModels.SchoolVM;
+using SchoolManager.Models.ViewModels.CourseVM;
 using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Controllers
@@ -19,13 +19,13 @@ namespace SchoolManager.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new SchoolCreateCourseVM());
+            return View(new CreateCourseVM());
         }
 
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(SchoolCreateCourseVM courseVM)
+        public IActionResult Create(CreateCourseVM courseVM)
         {
             var course = new CourseRecord { Name = courseVM.Course.Name };
 
@@ -34,7 +34,7 @@ namespace SchoolManager.Controllers
                 _repository.CourseService.AddCourseRecord(course);
                 return RedirectToAction("Index", "School");
             }
-            return View(new SchoolCreateCourseVM());
+            return View(new CreateCourseVM());
         }
 
         // GET
@@ -46,21 +46,25 @@ namespace SchoolManager.Controllers
             if (course == null)
                 return NotFound();
 
-            var vm = new SchoolEditCourseVM(course);
+            var vm = new EditCourseVM(course);
             return View(vm);
         }
 
-        [HttpPut("EditCourse/{id:Guid}")]
+        // PUT
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, CourseRecord newRecord)
+        public IActionResult EditPut(Guid id,EditCourseVM vm)
         {
             var recordForEdit = _repository.CourseService.GetCourse(id);
 
             if (recordForEdit == null)
                 return NotFound();
 
-            if (_repository.CourseService.UpdateCourse(newRecord))
-                return Ok();
+            vm.NewCourse.Id = id;
+            vm.NewCourse.Groups = recordForEdit.Groups;
+
+            if (_repository.CourseService.UpdateCourse(vm.NewCourse))
+                return RedirectToAction("Index", "School");
             else
                 return BadRequest();
         }
@@ -72,12 +76,13 @@ namespace SchoolManager.Controllers
                 return NotFound();
 
             var course = _repository.CourseService.GetCourse(id);
+            var isCourseHasGroup = _repository.GroupService.GetGroups(course!.Id).Count > 0;
 
             if (course == null)
                 return NotFound();
 
 
-            if (course.Groups.Count > 0)
+            if (isCourseHasGroup)
             {
                 TempData["ErrorMessage"] = "Неможливо видалити курс, оскільки він має прикріплені групи.";
                 return RedirectToAction("Index", "School"); ;

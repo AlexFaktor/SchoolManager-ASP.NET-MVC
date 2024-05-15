@@ -2,7 +2,7 @@
 using SchoolManager.Database;
 using SchoolManager.Database.Entity;
 using SchoolManager.Models.SchoolModels;
-using SchoolManager.Models.ViewModels.SchoolVM;
+using SchoolManager.Models.ViewModels.StudentVM;
 using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Controllers
@@ -21,13 +21,13 @@ namespace SchoolManager.Controllers
         public async Task<IActionResult> Create()
         {
             var groups = await _repository.GroupService.GetGroupsAsync();
-            return View(new SchoolCreateStudentVM(groups));
+            return View(new CreateStudentVM(groups));
         }
 
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SchoolCreateStudentVM studentVM)
+        public async Task<IActionResult> Create(CreateStudentVM studentVM)
         {
             var groupId = studentVM.Student.GroupId ?? throw new Exception("GroupId cannot be null");
             studentVM.Student.Group = _repository.GroupService.GetGroup(groupId);
@@ -37,7 +37,7 @@ namespace SchoolManager.Controllers
                 return RedirectToAction("Index", "School");
             }
 
-            return View(new SchoolCreateStudentVM(await _repository.GroupService.GetGroupsAsync()));
+            return View(new CreateStudentVM(await _repository.GroupService.GetGroupsAsync()));
         }
 
         // GET

@@ -1,5 +1,5 @@
-﻿@using SchoolManager.Models.ViewModels.SchoolVM
-@model SchoolEditCourseVM
+﻿@using SchoolManager.Models.ViewModels.CourseVM
+@model EditCourseVM
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
@@ -14,14 +14,13 @@
 <div class="card col-md-12">
     <h1>Оновити</h1>
 
-    <form asp-controller="Course" asp-action="Edit" asp-route-id="@Model.RecordCourse.Id" method="post">
-        <input type="hidden" asp-for="RecordCourse.Id" />
-        <label for="name">Нове ім'я</label>
-        <input id="name" asp-for="RecordCourse.Name" />
+    <form asp-controller="Course" asp-action="EditPut" asp-route-id="@Model.RecordCourse.Id" method="post">
+        <div class="form-group">
+            <label asp-for="@Model.NewCourse.Name"></label>
+            <input asp-for="@Model.NewCourse.Name" class="form-control" />
+        </div>
 
         <button type="submit">Оновити</button>
-        <input type="hidden" name="_method" value="PUT" /> <!-- Додаємо приховане поле з методом PUT -->
-        @Html.AntiForgeryToken() <!-- Вставляємо токен для валідації форми -->
     </form>
 
 

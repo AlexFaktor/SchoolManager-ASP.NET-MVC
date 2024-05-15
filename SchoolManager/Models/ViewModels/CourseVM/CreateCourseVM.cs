@@ -1,8 +1,8 @@
 ﻿using SchoolManager.Database.Entity;
 
-namespace SchoolManager.Models.ViewModels.SchoolVM
+namespace SchoolManager.Models.ViewModels.CourseVM
 {
-    public class SchoolCreateCourseVM()
+    public class CreateCourseVM()
     {
         public CourseRecord Course { get; set; } = new CourseRecord();
     }

@@ -1,15 +1,15 @@
 ﻿using SchoolManager.Database.Entity;
 
-namespace SchoolManager.Models.ViewModels.SchoolVM
+namespace SchoolManager.Models.ViewModels.GroupVM
 {
-    public class SchoolEditGroupVM
+    public class EditGroupVM
     {
         public GroupRecord RecordGroup { get; set; }
         public GroupRecord NewGroup { get; set; }
 
         public List<CourseRecord> Courses { get; }
 
-        public SchoolEditGroupVM(GroupRecord record, List<CourseRecord> courses)
+        public EditGroupVM(GroupRecord record, List<CourseRecord> courses)
         {
             RecordGroup = record;
             Courses = courses;
@@ -22,5 +22,7 @@ namespace SchoolManager.Models.ViewModels.SchoolVM
                 Students = record.Students,
             };
         }
+
+        public EditGroupVM() { }
     }
 }

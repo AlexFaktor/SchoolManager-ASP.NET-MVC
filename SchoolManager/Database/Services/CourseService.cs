@@ -37,6 +37,7 @@ namespace SchoolManager.Database.Services
             if (_db.Courses.Any(c => c.Id == courseRecord.Id))
             {
                 _db.Courses.Remove(_db.Courses.First(c => c.Id == courseRecord.Id));
+                _db.SaveChanges();
                 return true;
             }
             return false;
@@ -47,6 +48,7 @@ namespace SchoolManager.Database.Services
             if (_db.Courses.Any(c => c.Id == id))
             {
                 _db.Courses.Remove(_db.Courses.First(c => c.Id == id));
+                _db.SaveChanges();  
                 return true;
             }
             return false;

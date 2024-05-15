@@ -8,9 +8,16 @@ namespace SchoolManager.Database.Services
     {
         private readonly SchoolDbContext _db = db;
 
-        public void AddGroupRecord(GroupRecord groupRecord) => _db.Groups.Add(groupRecord);
+        public void AddGroupRecord(GroupRecord groupRecord)
+        {
+            _db.Groups.Add(groupRecord);
+            _db.SaveChanges();
+        }
 
         public List<GroupRecord> GetGroups() => [.. _db.Groups];
+        public List<GroupRecord> GetGroups(Guid courseId) => [.. _db.Groups.Where(g => g.CourseId == courseId)];
+
+        public GroupRecord? GetGroup(Guid id) => _db.Groups.FirstOrDefault(g => g.Id == id);
 
         public async Task<List<GroupRecord>> GetGroupsAsync() => await _db.Groups.ToListAsync();
 

@@ -8,11 +8,11 @@ namespace SchoolManager.Controllers
 {
     public class GroupController : Controller
     {
-        private readonly SchoolRepository _repository;
+        private readonly SchoolService _repository;
 
-        public GroupController(ISchoolRepository repository)
+        public GroupController(ISchoolService repository)
         {
-            _repository = (SchoolRepository)repository;
+            _repository = (SchoolService)repository;
         }
 
         // GET
@@ -26,19 +26,18 @@ namespace SchoolManager.Controllers
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SchoolCreateGroupVM groupVM)
+        public IActionResult Create(SchoolCreateGroupVM groupVM)
         {
-            var courses = await _repository.CourseService.GetCoursesAsync();
+            var courseId = groupVM.Group.CourseId ?? throw new Exception("CourseId cannot be null");
 
-            groupVM.Group.Course = courses.First(c => c.Id == groupVM.Group.CourseId);
+            groupVM.Group.Course = _repository.CourseService.GetCourse(courseId);
 
             if (ModelState.IsValid)
             {
                 _repository.GroupService.AddGroupRecord(groupVM.Group);
-                _repository.DbSaveChangesAsync();
                 return RedirectToAction("Index", "School");
             }
-            return View(new SchoolCreateGroupVM(courses));
+            return View(new SchoolCreateGroupVM(_repository.CourseService.GetCourses()));
         }
 
         // GET
@@ -57,21 +56,15 @@ namespace SchoolManager.Controllers
         }
 
         // DELETE
-        public async Task<IActionResult> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            var groups = await _repository.GroupService.GetGroupsAsync();
-
             if (id == Guid.Empty)
-            {
                 return NotFound();
-            }
 
-            var group = groups.FirstOrDefault(g => g.Id == id);
+            var group = _repository.GroupService.GetGroup(id);
 
             if (group == null)
-            {
                 return NotFound();
-            }
 
             if (group.Students.Count > 0)
             {
@@ -80,7 +73,6 @@ namespace SchoolManager.Controllers
             }
 
             _repository.GroupService.DeleteGroup(id);
-            _repository.DbSaveChanges();
 
             return RedirectToAction("Index", "School");
         }

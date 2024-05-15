@@ -8,9 +8,15 @@ namespace SchoolManager.Database.Services
     {
         private readonly SchoolDbContext _db = db;
 
-        public void AddCourseRecord(CourseRecord courseRecord) => _db.Courses.Add(courseRecord);
+        public void AddCourseRecord(CourseRecord courseRecord)
+        {
+            _db.Courses.Add(courseRecord);
+            _db.SaveChanges();
+        } 
 
         public List<CourseRecord> GetCourses() => [.. _db.Courses];
+
+        public CourseRecord? GetCourse(Guid id) => _db.Courses.FirstOrDefault(c => c.Id == id);
         public async Task<List<CourseRecord>> GetCoursesAsync() => await _db.Courses.ToListAsync();
 
         public bool UpdateCourse(CourseRecord courseRecord)

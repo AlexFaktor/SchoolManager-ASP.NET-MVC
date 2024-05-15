@@ -8,9 +8,16 @@ namespace SchoolManager.Database.Services
     {
         private readonly SchoolDbContext _db = db;
 
-        public void AddStudentRecord(StudentRecord studentRecord) => _db.Students.Add(studentRecord);
+        public void AddStudentRecord(StudentRecord studentRecord)
+        {
+            _db.Students.Add(studentRecord);
+            _db.SaveChanges();
+        }
 
         public List<StudentRecord> GetStudents() => [.. _db.Students];
+        public List<StudentRecord> GetStudents(Guid groupId) => [.. _db.Students.Where(s =>s.GroupId == groupId)];
+
+        public StudentRecord? GetStudent(Guid id) => _db.Students.FirstOrDefault(s => s.Id == id);
 
         public async Task<List<StudentRecord>> GetStudentsAsync() => await _db.Students.ToListAsync();
 

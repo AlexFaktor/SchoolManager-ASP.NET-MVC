@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Database;
 using SchoolManager.Database.Entity;
+using SchoolManager.Models.SchoolModels;
 using SchoolManager.Models.ViewModels.SchoolVM;
 using SchoolManager.Resources.Interface;
 
@@ -8,11 +9,11 @@ namespace SchoolManager.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly SchoolRepository _repository;
+        private readonly SchoolService _repository;
 
-        public StudentController(ISchoolRepository repository)
+        public StudentController(ISchoolService repository)
         {
-            _repository = (SchoolRepository)repository;
+            _repository = (SchoolService)repository;
         }
 
         // GET
@@ -28,17 +29,15 @@ namespace SchoolManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SchoolCreateStudentVM studentVM)
         {
-            var groups = await _repository.GroupService.GetGroupsAsync();
-            studentVM.Student.Group = groups.First(c => c.Id == studentVM.Student.GroupId);
+            var groupId = studentVM.Student.GroupId ?? throw new Exception("GroupId cannot be null");
+            studentVM.Student.Group = _repository.GroupService.GetGroup(groupId);
 
             if (ModelState.IsValid)
             {
-                _repository.StudentService.AddStudentRecord(studentVM.Student);
-                _repository.DbSaveChangesAsync();
                 return RedirectToAction("Index", "School");
             }
 
-            return View(new SchoolCreateStudentVM(groups));
+            return View(new SchoolCreateStudentVM(await _repository.GroupService.GetGroupsAsync()));
         }
 
         // GET
@@ -57,25 +56,17 @@ namespace SchoolManager.Controllers
         }
 
         // DELETE
-        public async Task<IActionResult> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            var students = await _repository.StudentService.GetStudentsAsync();
-
-
             if (id == Guid.Empty)
-            {
                 return NotFound();
-            }
 
-            var student = students.FirstOrDefault(s => s.Id == id);
+            var student = _repository.StudentService.GetStudent(id);
 
             if (student == null)
-            {
                 return NotFound();
-            }
 
             _repository.StudentService.DeleteStudent(id);
-            _repository.DbSaveChanges();
 
             return RedirectToAction("Index", "School");
         }

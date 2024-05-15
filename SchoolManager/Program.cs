@@ -15,7 +15,7 @@ namespace SchoolManager
             builder.Services.AddDbContext<SchoolDbContext>(options =>
                options.UseSqlite(builder.Configuration.GetConnectionString("SchoolDbConnection")));
 
-            builder.Services.AddScoped<ISchoolRepository, SchoolRepository>();
+            builder.Services.AddScoped<ISchoolService, SchoolService>();
 
             var app = builder.Build();
 

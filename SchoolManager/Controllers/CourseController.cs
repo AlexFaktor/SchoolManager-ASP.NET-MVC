@@ -8,11 +8,11 @@ namespace SchoolManager.Controllers
 {
     public class CourseController : Controller
     {
-        private readonly SchoolRepository _repository;
+        private readonly SchoolService _repository;
 
-        public CourseController(ISchoolRepository repository)
+        public CourseController(ISchoolService repository)
         {
-            _repository = (SchoolRepository)repository;
+            _repository = (SchoolService)repository;
         }
 
         // GET
@@ -25,14 +25,13 @@ namespace SchoolManager.Controllers
         // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SchoolCreateCourseVM courseVM)
+        public IActionResult Create(SchoolCreateCourseVM courseVM)
         {
             var course = new CourseRecord { Name = courseVM.Course.Name };
 
             if (ModelState.IsValid)
             {
                 _repository.CourseService.AddCourseRecord(course);
-                _repository.DbSaveChangesAsync();
                 return RedirectToAction("Index", "School");
             }
             return View(new SchoolCreateCourseVM());
@@ -40,11 +39,10 @@ namespace SchoolManager.Controllers
 
         // GET
         [HttpGet("EditCourse/{courseId}")]
-        public async Task<IActionResult> Edit(Guid courseId)
+        public IActionResult Edit(Guid courseId)
         {
-            var courses = await _repository.CourseService.GetCoursesAsync();
+            var course = _repository.CourseService.GetCourse(courseId);
 
-            var course = courses.FirstOrDefault(c => c.Id == courseId);
             if (course == null)
                 return NotFound();
 
@@ -52,40 +50,32 @@ namespace SchoolManager.Controllers
             return View(vm);
         }
 
-        // PUT
-        [HttpPut]
+        [HttpPut("EditCourse/{id:Guid}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(SchoolEditCourseVM vm)
+        public IActionResult Edit(Guid id, CourseRecord newRecord)
         {
-            var newRecord = vm.NewCourse;
+            var recordForEdit = _repository.CourseService.GetCourse(id);
 
-            var courses = await _repository.CourseService.GetCoursesAsync();
-
-            var recordForEdit = courses.FirstOrDefault(c => c.Id == newRecord.Id);
             if (recordForEdit == null)
                 return NotFound();
 
-            recordForEdit.Name = newRecord.Name;
-            _repository.DbSaveChangesAsync();
-            return Ok();
+            if (_repository.CourseService.UpdateCourse(newRecord))
+                return Ok();
+            else
+                return BadRequest();
         }
 
         // DELETE
-        public async Task<IActionResult> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            var courses = await _repository.CourseService.GetCoursesAsync();
-
             if (id == Guid.Empty)
-            {
                 return NotFound();
-            }
 
-            var course = courses.FirstOrDefault(c => c.Id == id);
+            var course = _repository.CourseService.GetCourse(id);
 
             if (course == null)
-            {
                 return NotFound();
-            }
+
 
             if (course.Groups.Count > 0)
             {
@@ -94,11 +84,8 @@ namespace SchoolManager.Controllers
             }
 
             _repository.CourseService.DeleteCourse(id);
-            _repository.DbSaveChanges();
 
             return RedirectToAction("Index", "School");
         }
-
-
     }
 }

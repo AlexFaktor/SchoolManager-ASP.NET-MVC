@@ -4,24 +4,30 @@ using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Database.Services
 {
-    public class StudentService(SchoolDbContext db) : IEntityService
+    public class StudentService : IEntityServiceExtended<StudentRecord>
     {
-        private readonly SchoolDbContext _db = db;
+        private readonly SchoolDbContext _db;
 
-        public void AddStudentRecord(StudentRecord studentRecord)
+        public StudentService(SchoolDbContext db)
         {
-            _db.Students.Add(studentRecord);
+            _db = db;
+        }
+
+        public void Add(StudentRecord record)
+        {
+            _db.Students.Add(record);
             _db.SaveChanges();
         }
 
-        public List<StudentRecord> GetStudents() => [.. _db.Students];
-        public List<StudentRecord> GetStudents(Guid groupId) => [.. _db.Students.Where(s =>s.GroupId == groupId)];
+        public List<StudentRecord> GetAll() => _db.Students.ToList();
 
-        public StudentRecord? GetStudent(Guid id) => _db.Students.FirstOrDefault(s => s.Id == id);
+        public List<StudentRecord> GetAll(Guid ownerId) => _db.Students.Where(s => s.GroupId == ownerId).ToList();
 
-        public async Task<List<StudentRecord>> GetStudentsAsync() => await _db.Students.ToListAsync();
+        public async Task<List<StudentRecord>> GetAllAsync() => await _db.Students.ToListAsync();
 
-        public bool UpdateStudent(StudentRecord studentRecord)
+        public StudentRecord? Get(Guid id) => _db.Students.FirstOrDefault(s => s.Id == id);
+
+        public bool Update(StudentRecord studentRecord)
         {
             var existingStudent = _db.Students.FirstOrDefault(s => s.Id == studentRecord.Id);
             if (existingStudent != null)
@@ -36,26 +42,21 @@ namespace SchoolManager.Database.Services
             return false;
         }
 
-        public bool DeleteStudent(StudentRecord studentRecord)
+        public bool Delete(Guid id)
         {
-            if (_db.Students.Any(g => g.Id == studentRecord.Id))
+            var student = _db.Students.FirstOrDefault(s => s.Id == id);
+            if (student != null)
             {
-                _db.Students.Remove(_db.Students.First(g => g.Id == studentRecord.Id));
+                _db.Students.Remove(student);
                 _db.SaveChanges();
                 return true;
             }
             return false;
         }
 
-        public bool DeleteStudent(Guid id)
+        public bool Delete(StudentRecord studentRecord)
         {
-            if (_db.Students.Any(s => s.Id == id))
-            {
-                _db.Students.Remove(_db.Students.First(s => s.Id == id));
-                _db.SaveChanges();
-                return true;
-            }
-            return false;
+            return Delete(studentRecord.Id);
         }
     }
 }

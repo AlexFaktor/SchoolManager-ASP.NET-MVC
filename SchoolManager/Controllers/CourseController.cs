@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Database;
 using SchoolManager.Database.Entity;
+using SchoolManager.Database.Services;
 using SchoolManager.Models.ViewModels.CourseVM;
 using SchoolManager.Resources.Interface;
 
@@ -8,11 +8,11 @@ namespace SchoolManager.Controllers
 {
     public class CourseController : Controller
     {
-        private readonly SchoolService _repository;
+        private readonly ISchoolService<CourseService, GroupService, StudentService> _service;
 
-        public CourseController(ISchoolService repository)
+        public CourseController(ISchoolService<CourseService, GroupService, StudentService> repository)
         {
-            _repository = (SchoolService)repository;
+            _service = repository;
         }
 
         // GET
@@ -31,7 +31,7 @@ namespace SchoolManager.Controllers
 
             if (ModelState.IsValid)
             {
-                _repository.CourseService.AddCourseRecord(course);
+                _service.Course.Add(course);
                 return RedirectToAction("Index", "School");
             }
             return View(new CreateCourseVM());
@@ -41,7 +41,7 @@ namespace SchoolManager.Controllers
         [HttpGet("EditCourse/{courseId}")]
         public IActionResult Edit(Guid courseId)
         {
-            var course = _repository.CourseService.GetCourse(courseId);
+            var course = _service.Course.Get(courseId);
 
             if (course == null)
                 return NotFound();
@@ -53,9 +53,9 @@ namespace SchoolManager.Controllers
         // PUT
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditPut(Guid id,EditCourseVM vm)
+        public IActionResult EditPut(Guid id, EditCourseVM vm)
         {
-            var recordForEdit = _repository.CourseService.GetCourse(id);
+            var recordForEdit = _service.Course.Get(id);
 
             if (recordForEdit == null)
                 return NotFound();
@@ -63,7 +63,7 @@ namespace SchoolManager.Controllers
             vm.NewCourse.Id = id;
             vm.NewCourse.Groups = recordForEdit.Groups;
 
-            if (_repository.CourseService.UpdateCourse(vm.NewCourse))
+            if (_service.Course.Update(vm.NewCourse))
                 return RedirectToAction("Index", "School");
             else
                 return BadRequest();
@@ -75,8 +75,8 @@ namespace SchoolManager.Controllers
             if (id == Guid.Empty)
                 return NotFound();
 
-            var course = _repository.CourseService.GetCourse(id);
-            var isCourseHasGroup = _repository.GroupService.GetGroups(course!.Id).Count > 0;
+            var course = _service.Course.Get(id);
+            var isCourseHasGroup = _service.Group.GetAll(course!.Id).Count > 0;
 
             if (course == null)
                 return NotFound();
@@ -88,7 +88,7 @@ namespace SchoolManager.Controllers
                 return RedirectToAction("Index", "School"); ;
             }
 
-            _repository.CourseService.DeleteCourse(id);
+            _service.Course.Delete(id);
 
             return RedirectToAction("Index", "School");
         }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Database;
+using SchoolManager.Database.Entity;
+using SchoolManager.Database.Services;
 using SchoolManager.Models.ViewModels.SchoolVM;
 using SchoolManager.Resources.Interface;
 
@@ -7,11 +9,11 @@ namespace SchoolManager.Controllers
 {
     public class SchoolController : Controller
     {
-        private readonly SchoolService _repository;
+        private readonly ISchoolService<CourseService, GroupService, StudentService> _service;
 
-        public SchoolController(ISchoolService repository)
+        public SchoolController(ISchoolService<CourseService, GroupService, StudentService> repository)
         {
-            _repository = (SchoolService)repository;
+            _service = repository;
         }
 
         // GET: SchoolController
@@ -20,7 +22,7 @@ namespace SchoolManager.Controllers
         {
             var schoolIndexVM = new SchoolIndexVM
             {
-                Courses = await _repository.CourseService.GetCoursesAsync()
+                Courses = await _service.Course.GetAllAsync()
             };
 
             return View(schoolIndexVM);
@@ -32,8 +34,8 @@ namespace SchoolManager.Controllers
         {
             var schoolIndexVM = new SchoolIndexVM
             {
-                Courses = await _repository.CourseService.GetCoursesAsync(),
-                Groups = _repository.GroupService.GetGroups(courseId),
+                Courses = await _service.Course.GetAllAsync(),
+                Groups = _service.Group.GetAll(courseId),
 
                 CourseId = courseId
             };
@@ -47,9 +49,9 @@ namespace SchoolManager.Controllers
         {
             var schoolIndexVM = new SchoolIndexVM
             {
-                Courses = await _repository.CourseService.GetCoursesAsync(),
-                Groups = _repository.GroupService.GetGroups(courseId),
-                Students = _repository.StudentService.GetStudents(groupId),
+                Courses = await _service.Course.GetAllAsync(),
+                Groups = _service.Group.GetAll(courseId),
+                Students = _service.Student.GetAll(groupId),
 
                 CourseId = courseId,
                 GroupId = groupId
@@ -64,9 +66,9 @@ namespace SchoolManager.Controllers
         {
             var schoolIndexVM = new SchoolIndexVM
             {
-                Courses = await _repository.CourseService.GetCoursesAsync(),
-                Groups = _repository.GroupService.GetGroups(courseId),
-                Students = _repository.StudentService.GetStudents(groupId),
+                Courses = await _service.Course.GetAllAsync(),
+                Groups = _service.Group.GetAll(courseId),
+                Students = _service.Student.GetAll(groupId),
 
                 CourseId = courseId,
                 GroupId = groupId,

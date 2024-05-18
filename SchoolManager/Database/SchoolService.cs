@@ -3,21 +3,19 @@ using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Database
 {
-    public class SchoolService : ISchoolService
+    public class SchoolService : ISchoolService<CourseService, GroupService, StudentService>
     {
         private readonly SchoolDbContext _db;
-        public CourseService CourseService { get; }
-        public GroupService GroupService { get; }
-        public StudentService StudentService { get; }
+        public CourseService Course { get; }
+        public GroupService Group { get; }
+        public StudentService Student { get; }
 
         public SchoolService(SchoolDbContext context)
         {
             _db = context;
-            CourseService = new CourseService(_db);
-            GroupService = new GroupService(_db);
-            StudentService = new StudentService(_db);
+            Course = new CourseService(_db);
+            Group = new GroupService(_db);
+            Student = new StudentService(_db);
         }
     }
 }
-
-

@@ -4,24 +4,30 @@ using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Database.Services
 {
-    public class GroupService(SchoolDbContext db) : IEntityService
+    public class GroupService : IEntityServiceExtended<GroupRecord>
     {
-        private readonly SchoolDbContext _db = db;
+        private readonly SchoolDbContext _db;
 
-        public void AddGroupRecord(GroupRecord groupRecord)
+        public GroupService(SchoolDbContext db)
+        {
+            _db = db;
+        }
+
+        public void Add(GroupRecord groupRecord)
         {
             _db.Groups.Add(groupRecord);
             _db.SaveChanges();
         }
 
-        public List<GroupRecord> GetGroups() => [.. _db.Groups];
-        public List<GroupRecord> GetGroups(Guid courseId) => [.. _db.Groups.Where(g => g.CourseId == courseId)];
+        public List<GroupRecord> GetAll() => _db.Groups.ToList();
 
-        public GroupRecord? GetGroup(Guid id) => _db.Groups.FirstOrDefault(g => g.Id == id);
+        public List<GroupRecord> GetAll(Guid ownerId) => _db.Groups.Where(s => s.CourseId == ownerId).ToList();
 
-        public async Task<List<GroupRecord>> GetGroupsAsync() => await _db.Groups.ToListAsync();
+        public async Task<List<GroupRecord>> GetAllAsync() => await _db.Groups.ToListAsync();
 
-        public bool UpdateGroup(GroupRecord groupRecord)
+        public GroupRecord? Get(Guid id) => _db.Groups.FirstOrDefault(g => g.Id == id);
+
+        public bool Update(GroupRecord groupRecord)
         {
             var existingGroup = _db.Groups.FirstOrDefault(g => g.Id == groupRecord.Id);
             if (existingGroup != null)
@@ -36,27 +42,21 @@ namespace SchoolManager.Database.Services
             return false;
         }
 
-
-        public bool DeleteGroup(GroupRecord groupRecord)
+        public bool Delete(Guid id)
         {
-            if (_db.Groups.Any(g => g.Id == groupRecord.Id))
+            var group = _db.Groups.FirstOrDefault(g => g.Id == id);
+            if (group != null)
             {
-                _db.Groups.Remove(_db.Groups.First(g => g.Id == groupRecord.Id));
+                _db.Groups.Remove(group);
                 _db.SaveChanges();
                 return true;
             }
             return false;
         }
 
-        public bool DeleteGroup(Guid id)
+        public bool Delete(GroupRecord groupRecord)
         {
-            if (_db.Groups.Any(g => g.Id == id))
-            {
-                _db.Groups.Remove(_db.Groups.First(g => g.Id == id));
-                _db.SaveChanges();
-                return true;
-            }
-            return false;
+            return Delete(groupRecord.Id);
         }
     }
 }

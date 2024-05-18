@@ -1,29 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchoolManager.Database;
-using SchoolManager.Database.Entity;
-using SchoolManager.Models.SchoolModels;
-using SchoolManager.Models.ViewModels.CourseVM;
-using SchoolManager.Models.ViewModels.GroupVM;
+using SchoolManager.Database.Services;
 using SchoolManager.Models.ViewModels.StudentVM;
 using SchoolManager.Resources.Interface;
-using System.Text.RegularExpressions;
 
 namespace SchoolManager.Controllers
 {
     public class StudentController : Controller
     {
-        private readonly SchoolService _repository;
+        private readonly ISchoolService<CourseService, GroupService, StudentService> _service;
 
-        public StudentController(ISchoolService repository)
+        public StudentController(ISchoolService<CourseService, GroupService, StudentService> repository)
         {
-            _repository = (SchoolService)repository;
+            _service = repository;
         }
 
         // GET
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var groups = await _repository.GroupService.GetGroupsAsync();
+            var groups = await _service.Group.GetAllAsync();
             return View(new CreateStudentVM(groups));
         }
 
@@ -33,22 +28,22 @@ namespace SchoolManager.Controllers
         public async Task<IActionResult> Create(CreateStudentVM studentVM)
         {
             var groupId = studentVM.Student.GroupId ?? throw new Exception("GroupId cannot be null");
-            studentVM.Student.Group = _repository.GroupService.GetGroup(groupId);
+            studentVM.Student.Group = _service.Group.Get(groupId);
 
             if (ModelState.IsValid)
             {
-                _repository.StudentService.AddStudentRecord(studentVM.Student);
+                _service.Student.Add(studentVM.Student);
                 return RedirectToAction("Index", "School");
             }
 
-            return View(new CreateStudentVM(await _repository.GroupService.GetGroupsAsync()));
+            return View(new CreateStudentVM(await _service.Group.GetAllAsync()));
         }
 
         // GET
         [HttpGet("EditStudent/{studentId}")]
         public IActionResult Edit(Guid studentId)
         {
-            var student = _repository.StudentService.GetStudent(studentId);
+            var student = _service.Student.Get(studentId);
 
             if (student == null)
                 return NotFound();
@@ -62,7 +57,7 @@ namespace SchoolManager.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditPut(Guid id, EditStudentVM vm)
         {
-            var recordForEdit = _repository.StudentService.GetStudent(id);
+            var recordForEdit = _service.Student.Get(id);
 
             if (recordForEdit == null)
                 return NotFound();
@@ -71,7 +66,7 @@ namespace SchoolManager.Controllers
             vm.NewStudent.GroupId = recordForEdit.GroupId;
             vm.NewStudent.Group = recordForEdit.Group;
 
-            if (_repository.StudentService.UpdateStudent(vm.NewStudent))
+            if (_service.Student.Update(vm.NewStudent))
                 return RedirectToAction("Index", "School");
             else
                 return BadRequest();
@@ -83,12 +78,12 @@ namespace SchoolManager.Controllers
             if (id == Guid.Empty)
                 return NotFound();
 
-            var student = _repository.StudentService.GetStudent(id);
+            var student = _service.Student.Get(id);
 
             if (student == null)
                 return NotFound();
 
-            _repository.StudentService.DeleteStudent(id);
+            _service.Student.Delete(id);
 
             return RedirectToAction("Index", "School");
         }

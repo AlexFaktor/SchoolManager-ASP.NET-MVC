@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.Database;
+using SchoolManager.Database.Services;
 using SchoolManager.Resources.Interface;
 
 namespace SchoolManager
@@ -15,7 +16,7 @@ namespace SchoolManager
             builder.Services.AddDbContext<SchoolDbContext>(options =>
                options.UseSqlite(builder.Configuration.GetConnectionString("SchoolDbConnection")));
 
-            builder.Services.AddScoped<ISchoolService, SchoolService>();
+            builder.Services.AddScoped<ISchoolService<CourseService, GroupService, StudentService>, SchoolService>();
 
             var app = builder.Build();
 

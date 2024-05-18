@@ -4,22 +4,28 @@ using SchoolManager.Resources.Interface;
 
 namespace SchoolManager.Database.Services
 {
-    public class CourseService(SchoolDbContext db) : IEntityService
+    public class CourseService : IEntityService<CourseRecord>
     {
-        private readonly SchoolDbContext _db = db;
+        private readonly SchoolDbContext _db;
 
-        public void AddCourseRecord(CourseRecord courseRecord)
+        public CourseService(SchoolDbContext db)
+        {
+            _db = db;
+        }
+
+        public void Add(CourseRecord courseRecord)
         {
             _db.Courses.Add(courseRecord);
             _db.SaveChanges();
-        } 
+        }
 
-        public List<CourseRecord> GetCourses() => [.. _db.Courses];
+        public List<CourseRecord> GetAll() => _db.Courses.ToList();
 
-        public CourseRecord? GetCourse(Guid id) => _db.Courses.FirstOrDefault(c => c.Id == id);
-        public async Task<List<CourseRecord>> GetCoursesAsync() => await _db.Courses.ToListAsync();
+        public async Task<List<CourseRecord>> GetAllAsync() => await _db.Courses.ToListAsync();
 
-        public bool UpdateCourse(CourseRecord courseRecord)
+        public CourseRecord? Get(Guid id) => _db.Courses.FirstOrDefault(c => c.Id == id);
+
+        public bool Update(CourseRecord courseRecord)
         {
             var existingCourse = _db.Courses.FirstOrDefault(c => c.Id == courseRecord.Id);
             if (existingCourse != null)
@@ -32,26 +38,21 @@ namespace SchoolManager.Database.Services
             return false;
         }
 
-        public bool DeleteCourse(CourseRecord courseRecord)
+        public bool Delete(Guid id)
         {
-            if (_db.Courses.Any(c => c.Id == courseRecord.Id))
+            var course = _db.Courses.FirstOrDefault(c => c.Id == id);
+            if (course != null)
             {
-                _db.Courses.Remove(_db.Courses.First(c => c.Id == courseRecord.Id));
+                _db.Courses.Remove(course);
                 _db.SaveChanges();
                 return true;
             }
             return false;
         }
 
-        public bool DeleteCourse(Guid id)
+        public bool Delete(CourseRecord courseRecord)
         {
-            if (_db.Courses.Any(c => c.Id == id))
-            {
-                _db.Courses.Remove(_db.Courses.First(c => c.Id == id));
-                _db.SaveChanges();  
-                return true;
-            }
-            return false;
+            return Delete(courseRecord.Id);
         }
     }
 }

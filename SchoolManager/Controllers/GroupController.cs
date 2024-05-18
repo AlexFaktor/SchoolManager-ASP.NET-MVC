@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Database.Services;
+using SchoolManager.Models.SchoolModels;
 using SchoolManager.Models.ViewModels.GroupVM;
 using SchoolManager.Resources.Interface;
 
@@ -14,7 +15,6 @@ namespace SchoolManager.Controllers
             _service = repository;
         }
 
-        // GET
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -22,11 +22,15 @@ namespace SchoolManager.Controllers
             return View(new CreateGroupVM(courses));
         }
 
-        // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateGroupVM groupVM)
         {
+            if (_service.Group.Get(groupVM.Group.Name) != null)
+            {
+                ModelState.AddModelError("Group.Name", "Група з таким ім'ям вже існує. Введіть інше ім'я.");
+            }
+
             var courseId = groupVM.Group.CourseId ?? throw new Exception("CourseId cannot be null");
 
             groupVM.Group.Course = _service.Course.Get(courseId);
@@ -39,7 +43,6 @@ namespace SchoolManager.Controllers
             return View(new CreateGroupVM(_service.Course.GetAll()));
         }
 
-        // GET
         [HttpGet("EditGroup/{groupId}")]
         public IActionResult Edit(Guid groupId)
         {
@@ -52,11 +55,15 @@ namespace SchoolManager.Controllers
             return View(vm);
         }
 
-        // PUT
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditPut(Guid id, EditGroupVM vm)
         {
+            if (_service.Course.Get(vm.NewGroup.Name) != null)
+            {
+                ModelState.AddModelError("NewGroup.Name", "Група з таким ім'ям вже існує. Введіть інше ім'я.");
+            }
+
             var recordForEdit = _service.Group.Get(id);
 
             if (recordForEdit == null)
@@ -73,17 +80,17 @@ namespace SchoolManager.Controllers
                 return BadRequest();
         }
 
-        // DELETE
         public IActionResult Delete(Guid id)
         {
             if (id == Guid.Empty)
                 return NotFound();
 
             var group = _service.Group.Get(id);
-            var isGroupHasStudents = _service.Student.GetAll(group!.Id).Count > 0;
 
             if (group == null)
                 return NotFound();
+
+            var isGroupHasStudents = _service.Student.GetAll(group.Id).Count > 0;      
 
             if (isGroupHasStudents)
             {

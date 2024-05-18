@@ -13,10 +13,11 @@ namespace SchoolManager.Database.Services
             _db = db;
         }
 
-        public void Add(StudentRecord record)
+        public bool Add(StudentRecord record)
         {
             _db.Students.Add(record);
             _db.SaveChanges();
+            return true;
         }
 
         public List<StudentRecord> GetAll() => _db.Students.ToList();
@@ -26,6 +27,8 @@ namespace SchoolManager.Database.Services
         public async Task<List<StudentRecord>> GetAllAsync() => await _db.Students.ToListAsync();
 
         public StudentRecord? Get(Guid id) => _db.Students.FirstOrDefault(s => s.Id == id);
+
+        public StudentRecord? Get(string name) => _db.Students.FirstOrDefault(s => s.Name == name);
 
         public bool Update(StudentRecord studentRecord)
         {

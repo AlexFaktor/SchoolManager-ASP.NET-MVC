@@ -18,8 +18,16 @@
         <div class="form-group">
             <label asp-for="@Model.NewCourse.Name"></label>
             <input asp-for="@Model.NewCourse.Name" class="form-control" />
+            <span asp-validation-for="NewCourse.Name" class="text-danger"></span>
         </div>
 
         <button type="submit">Оновити</button>
     </form>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

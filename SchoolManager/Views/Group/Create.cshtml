@@ -11,16 +11,26 @@
     <form asp-controller="Group" asp-action="Create" method="post">
         
         <label for="course">Оберіть курс:</label>
-        <select class="form-control" id="course" asp-for="@Model.Group.CourseId">
+        <select class="form-control" id="course" asp-for="Group.CourseId">
             @foreach (var course in Model.Courses)
             {
                 <option value="@course.Id">@course.Name</option>
             }
         </select>
 
-        <label for="name">Ім'я групи<label>
-        <input id="name" asp-for="@Model.Group.Name" />
+        <div class="form-group">
+            <label asp-for="Group.Name" class="control-label"></label>
+            <input asp-for="Group.Name" class="form-control" />
+            <span asp-validation-for="Group.Name" class="text-danger"></span>
+        </div>
 
         <button type="submit">Додати групу</button>
     </form>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

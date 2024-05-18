@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.Database.Entity;
 using SchoolManager.Database.Services;
+using SchoolManager.Models.SchoolModels;
 using SchoolManager.Models.ViewModels.CourseVM;
 using SchoolManager.Resources.Interface;
 
@@ -15,18 +16,21 @@ namespace SchoolManager.Controllers
             _service = repository;
         }
 
-        // GET
         [HttpGet]
         public IActionResult Create()
         {
             return View(new CreateCourseVM());
         }
 
-        // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CreateCourseVM courseVM)
         {
+            if (_service.Course.Get(courseVM.Course.Name) != null)
+            {
+                ModelState.AddModelError("Course.Name", "Курс з таким ім'ям вже існує. Введіть інше ім'я.");
+            }
+
             var course = new CourseRecord { Name = courseVM.Course.Name };
 
             if (ModelState.IsValid)
@@ -37,7 +41,6 @@ namespace SchoolManager.Controllers
             return View(new CreateCourseVM());
         }
 
-        // GET
         [HttpGet("EditCourse/{courseId}")]
         public IActionResult Edit(Guid courseId)
         {
@@ -50,11 +53,15 @@ namespace SchoolManager.Controllers
             return View(vm);
         }
 
-        // PUT
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditPut(Guid id, EditCourseVM vm)
         {
+            if (_service.Course.Get(vm.NewCourse.Name) != null)
+            {
+                ModelState.AddModelError("NewCourse.Name", "Курс з таким ім'ям вже існує. Введіть інше ім'я.");
+            }
+
             var recordForEdit = _service.Course.Get(id);
 
             if (recordForEdit == null)
@@ -69,18 +76,17 @@ namespace SchoolManager.Controllers
                 return BadRequest();
         }
 
-        // DELETE
         public IActionResult Delete(Guid id)
         {
             if (id == Guid.Empty)
                 return NotFound();
 
             var course = _service.Course.Get(id);
-            var isCourseHasGroup = _service.Group.GetAll(course!.Id).Count > 0;
 
             if (course == null)
                 return NotFound();
 
+            var isCourseHasGroup = _service.Group.GetAll(course.Id).Count > 0;
 
             if (isCourseHasGroup)
             {

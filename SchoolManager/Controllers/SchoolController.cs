@@ -16,7 +16,6 @@ namespace SchoolManager.Controllers
             _service = repository;
         }
 
-        // GET: SchoolController
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
@@ -28,7 +27,6 @@ namespace SchoolManager.Controllers
             return View(schoolIndexVM);
         }
 
-        // GET: SchoolController Course/
         [HttpGet("Index/{courseId}")]
         public async Task<IActionResult> Index(Guid courseId)
         {
@@ -43,7 +41,6 @@ namespace SchoolManager.Controllers
             return View(schoolIndexVM);
         }
 
-        // GET: SchoolController Group/
         [HttpGet("Index/{courseId}/{groupId}")]
         public async Task<IActionResult> Index(Guid courseId, Guid groupId)
         {
@@ -60,7 +57,6 @@ namespace SchoolManager.Controllers
             return View(schoolIndexVM);
         }
 
-        // GET: SchoolController Student/
         [HttpGet("Index/{courseId}/{groupId}/{studentId}")]
         public async Task<IActionResult> Index(Guid courseId, Guid groupId, Guid studentId)
         {

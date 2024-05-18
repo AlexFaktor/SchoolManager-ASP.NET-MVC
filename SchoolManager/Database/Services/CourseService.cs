@@ -13,10 +13,14 @@ namespace SchoolManager.Database.Services
             _db = db;
         }
 
-        public void Add(CourseRecord courseRecord)
+        public bool Add(CourseRecord courseRecord)
         {
+            if (Get(courseRecord.Name) != null)
+                return false;
+
             _db.Courses.Add(courseRecord);
             _db.SaveChanges();
+            return true;
         }
 
         public List<CourseRecord> GetAll() => _db.Courses.ToList();
@@ -25,8 +29,13 @@ namespace SchoolManager.Database.Services
 
         public CourseRecord? Get(Guid id) => _db.Courses.FirstOrDefault(c => c.Id == id);
 
+        public CourseRecord? Get(string name) => _db.Courses.FirstOrDefault(c => c.Name == name);
+
         public bool Update(CourseRecord courseRecord)
         {
+            if (Get(courseRecord.Name) != null)
+                return false;
+
             var existingCourse = _db.Courses.FirstOrDefault(c => c.Id == courseRecord.Id);
             if (existingCourse != null)
             {

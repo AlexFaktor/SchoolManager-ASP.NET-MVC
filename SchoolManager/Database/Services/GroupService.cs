@@ -13,10 +13,14 @@ namespace SchoolManager.Database.Services
             _db = db;
         }
 
-        public void Add(GroupRecord groupRecord)
+        public bool Add(GroupRecord groupRecord)
         {
+            if (Get(groupRecord.Name) != null)
+                return false;
+
             _db.Groups.Add(groupRecord);
             _db.SaveChanges();
+            return true;
         }
 
         public List<GroupRecord> GetAll() => _db.Groups.ToList();
@@ -27,8 +31,13 @@ namespace SchoolManager.Database.Services
 
         public GroupRecord? Get(Guid id) => _db.Groups.FirstOrDefault(g => g.Id == id);
 
+        public GroupRecord? Get(string name) => _db.Groups.FirstOrDefault(g => g.Name == name);
+
         public bool Update(GroupRecord groupRecord)
         {
+            if (Get(groupRecord.Name) != null)
+                return false;
+
             var existingGroup = _db.Groups.FirstOrDefault(g => g.Id == groupRecord.Id);
             if (existingGroup != null)
             {

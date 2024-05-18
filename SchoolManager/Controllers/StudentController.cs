@@ -14,7 +14,6 @@ namespace SchoolManager.Controllers
             _service = repository;
         }
 
-        // GET
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -22,7 +21,6 @@ namespace SchoolManager.Controllers
             return View(new CreateStudentVM(groups));
         }
 
-        // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateStudentVM studentVM)
@@ -39,7 +37,6 @@ namespace SchoolManager.Controllers
             return View(new CreateStudentVM(await _service.Group.GetAllAsync()));
         }
 
-        // GET
         [HttpGet("EditStudent/{studentId}")]
         public IActionResult Edit(Guid studentId)
         {
@@ -52,7 +49,6 @@ namespace SchoolManager.Controllers
             return View(vm);
         }
 
-        // PUT
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditPut(Guid id, EditStudentVM vm)
@@ -72,7 +68,6 @@ namespace SchoolManager.Controllers
                 return BadRequest();
         }
 
-        // DELETE
         public IActionResult Delete(Guid id)
         {
             if (id == Guid.Empty)

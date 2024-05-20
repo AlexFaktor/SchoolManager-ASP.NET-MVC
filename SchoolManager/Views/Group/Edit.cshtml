@@ -1,0 +1,33 @@
+﻿@using SchoolManager.Models.ViewModels.GroupVM
+@model EditGroupVM
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Edit group";
+}
+
+<div class="card col-md-14">
+    <h1>Група</h1>
+    <p>Назва - @Model.RecordGroup.Name</p>
+</div>
+
+<div class="card col-md-12">
+    <h1>Оновити</h1>
+
+    <form asp-controller="Group" asp-action="EditPut" asp-route-id="@Model.RecordGroup.Id" method="post">
+        <div class="form-group">
+            <label asp-for="@Model.NewGroup.Name"></label>
+            <input asp-for="@Model.NewGroup.Name" class="form-control" />
+            <span asp-validation-for="NewGroup.Name" class="text-danger"></span>
+        </div>
+
+        <button type="submit">Оновити</button>
+    </form>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,36 @@
+﻿@using SchoolManager.Models.ViewModels.GroupVM
+@model CreateGroupVM
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Create group";
+}
+
+<div class="card col-md-12">
+    <h1>Додати групу</h1>
+    <form asp-controller="Group" asp-action="Create" method="post">
+        
+        <label for="course">Оберіть курс:</label>
+        <select class="form-control" id="course" asp-for="Group.CourseId">
+            @foreach (var course in Model.Courses)
+            {
+                <option value="@course.Id">@course.Name</option>
+            }
+        </select>
+
+        <div class="form-group">
+            <label asp-for="Group.Name" class="control-label"></label>
+            <input asp-for="Group.Name" class="form-control" />
+            <span asp-validation-for="Group.Name" class="text-danger"></span>
+        </div>
+
+        <button type="submit">Додати групу</button>
+    </form>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
